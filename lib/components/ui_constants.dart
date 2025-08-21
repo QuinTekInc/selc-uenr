@@ -7,8 +7,10 @@ import 'package:provider/provider.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
 
+import '../model/course_info.dart';
 import '../pages/get_started.dart';
 import '../pages/shared_pages.dart';
+import '../pages/view_eval_page.dart';
 import 'alert_dialog.dart';
 
 
@@ -293,6 +295,83 @@ class SharedFunctions{
     }
 
   }
+
+
+
+
+
+  static void handleCourseCellPressed(BuildContext context, RegisteredCourse course) {
+
+
+    if(course.evaluated){
+      handleExtractEvaluationForCourse(context, course);
+      return;
+    }
+
+
+
+    if(!Provider.of<SelcProvider>(context, listen: false).enableEvaluations){
+
+      showToastMessage(
+          context,
+          alertType: AlertType.warning,
+          details: 'Course evaluations has been disabled.'
+      );
+
+      return;
+    }
+
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) =>  EvaluationPage(course: course,)
+        )
+    );
+  }
+
+
+
+  static void handleExtractEvaluationForCourse(BuildContext context, RegisteredCourse course) async {
+
+    showDialog(
+        context: context,
+        builder: (_) => const LoadingDialog(
+            message: 'Retrieving information. Please wait'
+        )
+    );
+
+    try{
+
+      Map<String, dynamic> answersMap = await Provider.of<SelcProvider>(context, listen: false).getEvaluationForCourse(course.classCourseId!);
+
+      Navigator.pop(context); //close the alert dialog.
+
+      Navigator.push(context, MaterialPageRoute(
+          builder: (_) => ViewEvaluationForCourse(courseInfo: course, answersMap: answersMap,)
+      )
+      );
+
+    }on SocketException{
+      Navigator.pop(context); //close the loading dialog.
+
+      showNoConnectionDialog(context);
+    }
+    catch(error){
+
+      Navigator.pop(context); //close the loading alert dialog.;
+
+      showCustomAlertDialog(
+          context,
+          alertType: AlertType.warning,
+          title: 'Error',
+          contentText: 'There was error retrieving the information for course, ${course.courseTitle}[${course.courseCode}]. Please try again'
+      );
+
+    }
+
+  }
+
 }
 
 

@@ -81,6 +81,7 @@ class SelcProvider extends ChangeNotifier{
     await pref_util.saveAuthorizationToken(responseBody['token']);
 
     await checkEvaluationEnabled();
+
     await getQuestions();
 
     notifyListeners();

@@ -307,7 +307,7 @@ class _WebDashboardPageState extends State<WebDashboardPage> {
 
 
 
-
+//NOTE: this widget has been made stateful because of the hover color den things
 
 class WebCourseCell extends StatefulWidget {
 
@@ -332,34 +332,7 @@ class _WebCourseCellState extends State<WebCourseCell> {
       onExit: (_) => setState(() => hoverColor = Colors.transparent),
 
       child: GestureDetector(
-        onTap: () {
-
-          if(widget.course.evaluated) {
-            handleExtractEvaluationForCourse(context, widget.course);
-            return;
-          }
-
-
-          if(!Provider.of<SelcProvider>(context, listen: false).enableEvaluations){
-
-            showToastMessage(
-                context,
-                alertType: AlertType.warning,
-                details: 'Course evaluations has been disabled.'
-            );
-
-            return;
-          }
-
-
-          Navigator.push(  
-            context,
-            MaterialPageRoute(
-              builder: (_) => EvaluationPage(course: widget.course)
-            )
-          );
-        },
-
+        onTap: () => SharedFunctions.handleCourseCellPressed(context, widget.course),
         child: Container(
           padding: const EdgeInsets.all(8),
         

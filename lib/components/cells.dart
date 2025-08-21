@@ -121,79 +121,15 @@ class CourseCell extends StatelessWidget {
         trailing: course.evaluated ? const Icon(CupertinoIcons.check_mark_circled_solid, color: Colors.green, size: 25,) :
                 CustomText(course.creditHours.toString(), fontSize: 16, textColor: Colors.blue, fontWeight: FontWeight.w600,),
 
-        onTap: () => !course.evaluated ? handleCellPressed(context) : handleExtractEvaluationForCourse(context, course),
+        onTap: () => SharedFunctions.handleCourseCellPressed(context, course),
       ),
     );
   }
 
 
-  void handleCellPressed(BuildContext context) {
-
-    if(!Provider.of<SelcProvider>(context, listen: false).enableEvaluations){
-
-      showToastMessage(
-          context,
-          alertType: AlertType.warning,
-          details: 'Course evaluations has been disabled.'
-      );
-
-      return;
-    }
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>  EvaluationPage(course: course,)
-      )
-    );
-  }
 
 
 }
-
-
-
-
-void handleExtractEvaluationForCourse(BuildContext context, RegisteredCourse course) async {
-
-  showDialog(
-    context: context,
-    builder: (_) => const LoadingDialog(
-      message: 'Retrieving information. Please wait'
-    )
-  );
-
-  try{
-
-    Map<String, dynamic> answersMap = await Provider.of<SelcProvider>(context, listen: false).getEvaluationForCourse(course.classCourseId!);
-
-    Navigator.pop(context); //close the alert dialog.
-
-    Navigator.push(context, MaterialPageRoute(
-        builder: (_) => ViewEvaluationForCourse(courseInfo: course, answersMap: answersMap,)
-      )
-    );
-
-  }on SocketException{
-    Navigator.pop(context); //close the loading dialog.
-
-    showNoConnectionDialog(context);
-  }
-  catch(error){
-
-    Navigator.pop(context); //close the loading alert dialog.;
-
-    showCustomAlertDialog(
-      context,
-      alertType: AlertType.warning,
-      title: 'Error',
-      contentText: 'There was error retrieving the information for course, ${course.courseTitle}[${course.courseCode}]. Please try again'
-    );
-
-  }
-
-}
-
 
 
 
