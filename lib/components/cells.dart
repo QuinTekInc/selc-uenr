@@ -276,7 +276,7 @@ class QuestionCellController{
   QuestionCellController({
     this.selectedIndex = -1,
     this.questionId = -1,
-    this.selectedAnswer = "No answer"
+    this.selectedAnswer = "No Answer"
   });
 
 

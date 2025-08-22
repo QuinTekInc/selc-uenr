@@ -349,8 +349,7 @@ class SharedFunctions{
 
       Navigator.push(context, MaterialPageRoute(
           builder: (_) => ViewEvaluationForCourse(courseInfo: course, answersMap: answersMap,)
-      )
-      );
+      ));
 
     }on SocketException{
       Navigator.pop(context); //close the loading dialog.
