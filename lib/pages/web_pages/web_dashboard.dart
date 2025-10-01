@@ -6,13 +6,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selc_uenr/components/alert_dialog.dart';
-import 'package:selc_uenr/components/cells.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/components/ui_constants.dart';
 import 'package:selc_uenr/model/course_info.dart';
-import 'package:selc_uenr/pages/mobile_pages/mobile_evaluation_page.dart';
-import 'package:selc_uenr/pages/get_started.dart';
-import 'package:selc_uenr/pages/shared_pages.dart';
 import 'package:selc_uenr/pages/student_info_page.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
 
@@ -353,7 +349,7 @@ class _WebCourseCellState extends State<WebCourseCell> {
                 ),
         
         
-               Expanded(  
+              Expanded(  
                 child: CustomText(
                   widget.course.courseCode
                 ),

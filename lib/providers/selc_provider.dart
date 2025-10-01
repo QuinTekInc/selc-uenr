@@ -77,6 +77,7 @@ class SelcProvider extends ChangeNotifier{
 
     _studentInfo = StudentInfo.fromMap(responseBody as Map<String, dynamic>);
 
+
     //todo: save the auth_token key that came with the response.
     await pref_util.saveAuthorizationToken(responseBody['token']);
 

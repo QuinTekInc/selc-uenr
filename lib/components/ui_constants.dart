@@ -234,15 +234,18 @@ class SharedFunctions{
           contentText: exception.toString()
       );
 
-    }on Error{
+    }on Error catch(e){
 
       Navigator.pop(context); //closes the loading dialog
 
       showCustomAlertDialog(
-          context,
-          title: 'Error',
-          contentText: 'An unexpected error occurred. Please try again.'
+        context,
+        title: 'Error',
+        contentText: 'An unexpected error occurred. Please try again.'
       );
+
+      // debugPrint(e.toString());
+      // debugPrint(e.stackTrace.toString());
     }
   }
 

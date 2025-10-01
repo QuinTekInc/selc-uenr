@@ -10,8 +10,6 @@ import 'package:selc_uenr/components/ui_constants.dart';
 import 'package:selc_uenr/model/student_info.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
 
-import 'get_started.dart';
-
 
 class StudentInfoPage extends StatelessWidget {
   const StudentInfoPage({super.key});

@@ -1,16 +1,11 @@
 
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:selc_uenr/components/alert_dialog.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/components/ui_constants.dart';
 import 'package:selc_uenr/model/course_info.dart';
-import 'package:selc_uenr/pages/mobile_pages/mobile_evaluation_page.dart';
-import 'package:selc_uenr/pages/shared_pages.dart';
-import 'package:selc_uenr/pages/view_eval_page.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
 import '../model/questionnaire.dart';
 import 'button.dart';
@@ -164,7 +159,7 @@ class _QuestionCellState extends State<QuestionCell> {
 
     questionNumber = Provider.of<SelcProvider>(context, listen:false)
                           .allQuestions.indexOf(widget.questionnaire) + 1;
-   
+
     selectedIndex = widget.controller.selectedIndex;
     widget.controller.questionId = widget.questionnaire.questionId;
   }
