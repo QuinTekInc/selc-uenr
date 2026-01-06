@@ -18,7 +18,6 @@ import 'package:selc_uenr/components/ui_constants.dart';
 import 'package:selc_uenr/model/course_info.dart';
 import 'package:selc_uenr/pages/student_info_page.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
-import 'package:selc_uenr/pages/web_pages/web_dashboard.dart';
 
 
 class MobileDashboardPage extends StatefulWidget {

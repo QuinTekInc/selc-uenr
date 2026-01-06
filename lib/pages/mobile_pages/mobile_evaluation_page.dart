@@ -6,12 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selc_uenr/components/button.dart';
 import 'package:selc_uenr/components/text.dart';
-import 'package:selc_uenr/components/ui_constants.dart';
 import 'package:selc_uenr/model/course_info.dart';
 import 'package:selc_uenr/model/questionnaire.dart';
 import 'package:selc_uenr/pages/verify_answers.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
-import 'package:selc_uenr/pages/web_pages/web_evaluation_page.dart';
 
 import '../../components/cells.dart';
 

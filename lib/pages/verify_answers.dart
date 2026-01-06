@@ -343,9 +343,15 @@ class _VerifyReviewAnswersPageState extends State<VerifyReviewAnswersPage> {
       Navigator.pop(context); //close the loading animation window.
       showToastMessage(context, details:'You are not connected to the internet. Check your internet connection and try again.');
       return;
-    }on Error catch(_){
+    }on Error catch(exception){
       Navigator.pop(context); //close the loading alert window.
-      showToastMessage(context, alertType: AlertType.warning, details: 'An unexcepted error occurred. Please try again later.');
+      showToastMessage(
+        context,
+        alertType: AlertType.warning, 
+        details: 'An unexcepted error occurred. Please try again later.'
+      );
+      debugPrint(exception.toString());
+      debugPrint(exception.stackTrace.toString());
       return;
     }
 

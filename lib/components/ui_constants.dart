@@ -16,7 +16,7 @@ import 'alert_dialog.dart';
 
 
 
-const organisationName = "Quality Assurance and Academic Planning Directorate";
+const String organisationName = "Quality Assurance and Academic Planning Directorate";
 
 const String termsMessage = "Dear Student, As UENR seeks to enhance the quality of teaching and "
     "learning of its students, your honest assessment of your lecturer and course"
@@ -234,7 +234,7 @@ class SharedFunctions{
           contentText: exception.toString()
       );
 
-    }on Error catch(e){
+    }on Error{
 
       Navigator.pop(context); //closes the loading dialog
 
@@ -309,6 +309,20 @@ class SharedFunctions{
     if(course.evaluated){
       handleExtractEvaluationForCourse(context, course);
       return;
+    }
+    
+    
+    if(course.isAcceptingResponse){
+    
+    	showToastMessage(
+        context,
+        alertType: AlertType.warning,
+        details: 'No longer accepting evaluation response for this course'
+      );
+
+
+      return;
+    
     }
 
 

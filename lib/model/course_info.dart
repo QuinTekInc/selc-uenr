@@ -9,6 +9,7 @@ class RegisteredCourse{
   String department;
   int creditHours;
   bool evaluated;
+  bool isAcceptingResponse;
 
   RegisteredCourse({
     required this.courseCode,
@@ -17,6 +18,7 @@ class RegisteredCourse{
     required this.creditHours,
     this.classCourseId,
     this.evaluated = false,
+    required this.isAcceptingResponse,
     this.department=''
   });
 
@@ -29,7 +31,8 @@ class RegisteredCourse{
       creditHours: jsonMap['credit_hours'],
       department: jsonMap['department'],
       classCourseId: jsonMap['cc_id'],
-      evaluated:  jsonMap['evaluated']
+      evaluated:  jsonMap['evaluated'],
+      isAcceptingResponse: jsonMap['is_accepting_response']
     );
   }
 
