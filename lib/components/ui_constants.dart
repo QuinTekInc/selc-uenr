@@ -312,7 +312,7 @@ class SharedFunctions{
     }
     
     
-    if(course.isAcceptingResponse){
+    if(!course.isAcceptingResponse){
     
     	showToastMessage(
         context,
