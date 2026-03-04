@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
 
-import '../model/course_info.dart';
+import '../model/models.dart';
 import '../pages/get_started.dart';
 import '../pages/shared_pages.dart';
 import '../pages/view_eval_page.dart';

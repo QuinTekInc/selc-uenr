@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/components/ui_constants.dart';
-import 'package:selc_uenr/model/course_info.dart';
+import 'package:selc_uenr/model/models.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
-import '../model/questionnaire.dart';
 import 'button.dart';
 import 'ui_constants.dart' as uiConstants;
 

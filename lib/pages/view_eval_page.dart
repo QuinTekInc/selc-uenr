@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/components/ui_constants.dart';
-import 'package:selc_uenr/model/course_info.dart';
+import 'package:selc_uenr/model/models.dart';
 
 
 

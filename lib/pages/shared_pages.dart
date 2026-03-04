@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:selc_uenr/components/ui_constants.dart';
-import 'package:selc_uenr/model/course_info.dart';
+import 'package:selc_uenr/model/models.dart';
 import 'package:selc_uenr/pages/mobile_pages/mobile_evaluation_page.dart';
 import 'package:selc_uenr/pages/web_pages/web_dashboard.dart';
 import 'package:selc_uenr/pages/web_pages/web_evaluation_page.dart';

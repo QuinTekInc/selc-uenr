@@ -1,13 +1,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:selc_uenr/model/course_info.dart';
 import 'package:selc_uenr/model/models.dart';
-import 'package:selc_uenr/model/student_info.dart';
 import 'dart:convert';
-import '../components/server_connector.dart' as connector;
-import '../components/preferences_util.dart' as pref_util;
-import '../model/questionnaire.dart';
+import 'package:selc_uenr/components/server_connector.dart' as connector;
+import 'package:selc_uenr/components/preferences_util.dart' as pref_util;
 
 
 /*
