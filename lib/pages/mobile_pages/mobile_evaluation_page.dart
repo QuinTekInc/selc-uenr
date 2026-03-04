@@ -7,12 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:selc_uenr/components/button.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/model/course_info.dart';
+import 'package:selc_uenr/model/models.dart';
 import 'package:selc_uenr/model/questionnaire.dart';
 import 'package:selc_uenr/pages/verify_answers.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
-
 import '../../components/cells.dart';
-
 
 class MobileEvaluationPage extends StatefulWidget {
 
@@ -31,7 +30,6 @@ class MobileEvaluationPage extends StatefulWidget {
 
 class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
 
-  Map<String, List<Questionnaire>> questionnairesMap = {};
   
   List<Questionnaire> allQuestions = [];
 
@@ -51,8 +49,6 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
     // TODO: implement initState
     super.initState();
 
-    questionnairesMap = Provider.of<SelcProvider>(context, listen:false).questionnairesMap;
-    
     allQuestions = Provider.of<SelcProvider>(context, listen: false).allQuestions;
     qCellControllers = List<QuestionCellController>.generate(allQuestions.length, (index) => QuestionCellController());
 
@@ -65,15 +61,17 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
 
 
   List<Widget> initFragments() => List.generate(
-    questionnairesMap.length,
+    Provider.of<SelcProvider>(context, listen: false).categories.length,
     (int index) {
 
-      String categoryName = questionnairesMap.keys.elementAt(index);
-      List<Questionnaire> catQuestions = questionnairesMap[categoryName] ?? [];
+      QuestionCategory category =  Provider.of<SelcProvider>(context, listen: false).categories[index];
+      //get the category name at the current iteration
+      String categoryName = category.categoryName;
+      List<Questionnaire> questionnaires = category.questionnaires;
       
       return buildCategoryFragment(
         categoryName: categoryName,
-        catQuestions: catQuestions,
+        catQuestions: questionnaires,
       );
     }
   );
@@ -95,30 +93,29 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
         children: [
 
           if(currentPage > 0) FloatingActionButton(
-              child: HeaderText('<', textColor: Colors.white),
-              tooltip: 'Previous',
-              backgroundColor: Colors.green.shade400,
-              onPressed: (){
-                _pageController.previousPage(
-                  duration: const Duration(milliseconds: 500), curve: Curves.easeIn
-                );
+            child: HeaderText('<', textColor: Colors.white),
+            tooltip: 'Previous',
+            backgroundColor: Colors.green.shade400,
+            onPressed: (){
+              _pageController.previousPage(
+                duration: const Duration(milliseconds: 500), curve: Curves.easeIn
+              );
 
-              }
+            }
           ),
 
           const SizedBox(width: 5,),
 
           if(currentPage != categoryFragments.length - 1)FloatingActionButton(
 
-              child: HeaderText('>', textColor: Colors.white),
-              tooltip: 'Next',
-              backgroundColor: Colors.green.shade400,
-              onPressed: (){
-
-                _pageController.nextPage(
-                    duration: const Duration(milliseconds: 500), curve: Curves.easeIn
-                );
-              }
+            child: HeaderText('>', textColor: Colors.white),
+            tooltip: 'Next',
+            backgroundColor: Colors.green.shade400,
+            onPressed: (){
+              _pageController.nextPage(
+                  duration: const Duration(milliseconds: 500), curve: Curves.easeIn
+              );
+            }
           )
         ],
       ),

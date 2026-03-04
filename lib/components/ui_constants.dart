@@ -81,16 +81,25 @@ List<Widget> getDashboardCards(BuildContext context, {removeSizedBoxes = false})
 
   List<Widget> dashboardCards = [
 
-    buildDashboardCard( 
-      context, 
-      title: 'Current Semester',
-      detail: '1',
+    buildDashboardCard(
+      context,
+      title: 'Academic Year',
+      detail: Provider.of<SelcProvider>(context, listen: false).generalSettings.academicYear,
       icon: Icons.school,
       backgroundColor: Colors.grey.shade400
     ),
 
     separator,
 
+    buildDashboardCard( 
+      context, 
+      title: 'Current Semester',
+      detail: Provider.of<SelcProvider>(context, listen: false).generalSettings.currentSemester.toString(),
+      icon: Icons.school,
+      backgroundColor: Colors.grey.shade600
+    ),
+
+    separator,
 
     buildDashboardCard(
       context,  
@@ -189,9 +198,6 @@ Widget buildDashboardCard(BuildContext context, {required IconData icon, require
 
 
 
-
-
-
 bool isDesktop(BuildContext context) => MediaQuery.of(context).size.width >= 700;
 
 
@@ -202,10 +208,10 @@ class SharedFunctions{
 
   static void handleLogin(BuildContext context, String username, String password) async {
     showDialog(
-        context: context,
-        builder: (_) => const LoadingDialog(
-            message: 'Signing in. Please wait'
-        )
+      context: context,
+      builder: (_) => const LoadingDialog(
+        message: 'Signing in. Please wait'
+      )
     );
 
     try{
@@ -326,13 +332,12 @@ class SharedFunctions{
     }
 
 
-
-    if(!Provider.of<SelcProvider>(context, listen: false).enableEvaluations){
+    if(!Provider.of<SelcProvider>(context, listen: false).generalSettings.isAcceptingEvaluation){
 
       showToastMessage(
-          context,
-          alertType: AlertType.warning,
-          details: 'Course evaluations has been disabled.'
+        context,
+        alertType: AlertType.warning,
+        details: 'Course evaluations has been disabled.'
       );
 
       return;

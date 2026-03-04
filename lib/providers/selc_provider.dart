@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:selc_uenr/model/course_info.dart';
+import 'package:selc_uenr/model/models.dart';
 import 'package:selc_uenr/model/student_info.dart';
 import 'dart:convert';
 import '../components/server_connector.dart' as connector;
@@ -30,23 +31,30 @@ class SelcProvider extends ChangeNotifier{
   StudentInfo? _studentInfo;
   StudentInfo get studentInfo => _studentInfo!;
 
-  List<RegisteredCourse> courses = [];
-  Map<String, List<Questionnaire>> questionnairesMap = {};
+  GeneralSettings? _generalSettings;
+  GeneralSettings get generalSettings => _generalSettings!;
 
-  List<Questionnaire> allQuestions = [];
+  List<QuestionCategory> categories = [];
+
+  List<Questionnaire>  get allQuestions{
+    if(categories.isEmpty) return [];
+
+    List<Questionnaire> items = [
+      for(QuestionCategory category in categories)
+          for(Questionnaire question in category.questionnaires) question
+    ];
+
+    return items;
+  }
+
+  List<RegisteredCourse> courses = [];
 
   int questionsCount = 0;
-
-  //check if evaluations are enabled.
-  bool enableEvaluations = true;
-
 
   void flushData(){
     _studentInfo = null;
     courses.clear();
     allQuestions.clear();
-    questionnairesMap.clear();
-
   }
 
 
@@ -81,7 +89,7 @@ class SelcProvider extends ChangeNotifier{
     //todo: save the auth_token key that came with the response.
     await pref_util.saveAuthorizationToken(responseBody['token']);
 
-    await checkEvaluationEnabled();
+    await getGeneralSettings();
 
     await getQuestions();
 
@@ -98,9 +106,7 @@ class SelcProvider extends ChangeNotifier{
     if(response.statusCode != 200){
       throw Error();
     }
-    
-    
-    
+
     //todo:delete the the user's authentication from the shared preference
     await pref_util.deleteAuthorizationToken();
 
@@ -110,15 +116,16 @@ class SelcProvider extends ChangeNotifier{
 
 
 
-  Future<void> checkEvaluationEnabled() async {
+  Future<void> getGeneralSettings() async {
 
-    final response = await connector.getRequest(endPoint: 'check-enable-evaluations/');
+    final response = await connector.getRequest(endPoint: 'get-general-settings/');
 
     if(response.statusCode != 200){
-      throw Error();
+      throw Exception('Error retrieving general settings');
     }
 
-    enableEvaluations = jsonDecode(response.body)['enable_evaluations'];
+    dynamic responseBody = jsonDecode(response.body);
+    _generalSettings = GeneralSettings.fromJson(Map<String, dynamic>.from(responseBody));
 
     notifyListeners();
   }
@@ -129,14 +136,11 @@ class SelcProvider extends ChangeNotifier{
 
   Future<void> getRegisteredCourses() async {
 
-
     final response = await connector.getRequest(endPoint: 'get-registered-courses/');
-
 
     if(response.statusCode != 200){
       throw Error();
     }
-
 
     List<dynamic> responseBody = jsonDecode(response.body);
 
@@ -172,47 +176,20 @@ class SelcProvider extends ChangeNotifier{
   }
 
 
-
-
-  List<RegisteredCourse> extractCourses(List<dynamic> infoListMap) {
-    return infoListMap.map((jsonMap) => RegisteredCourse.fromJson(jsonMap)).toList();
-  }
-
-
   Future<void> getQuestions() async {
-    final response = await connector.getRequest(endPoint: 'get-questions/');
+    final response = await connector.getRequest(endPoint: 'get-question-categories/');
 
     if(response.statusCode != 200) throw Error();
 
-
     List<dynamic> responseBody = jsonDecode(response.body);
-    extractQuestionnaires(responseBody);
+
+    categories = responseBody.map(
+            (jsonMap) => QuestionCategory.fromJson(jsonMap)).toList();
 
     notifyListeners();
-    
-  }
-
-
-  void extractQuestionnaires(dynamic questionnaireMap){
-
-    for(Map<String, dynamic> categorizedQuestions in questionnaireMap){
-
-      String category = categorizedQuestions['category'];
-      List<dynamic> questions = categorizedQuestions['questions'];
-
-      List<Questionnaire> questionnaires = questions.map(
-              (question) => Questionnaire.fromJson(question)).toList();
-
-      allQuestions += questionnaires;
-
-      //questionnairesMap.addAll({category: questionnaires});
-      questionnairesMap[category] = questionnaires;
-    }
-
-
-    debugPrint('TOTAL NUMBER OF QUESTIONNAIRES: ${allQuestions.length}');
 
   }
+
 
 
   Future<void> submitQuestionnaire(int classCourseId, dynamic answers, int rating, suggestion) async {

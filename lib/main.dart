@@ -8,19 +8,16 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-      ChangeNotifierProvider(
-        create: (_) => SelcProvider(),
-
-        child: const SelcApp(),
-      ),
+    ChangeNotifierProvider(
+      create: (_) => SelcProvider(),
+      child: const SelcApp(),
+    ),
   );
 }
 
 class SelcApp extends StatelessWidget {
 
   const SelcApp({super.key});
-
-
 
   @override
   Widget build(BuildContext context) {

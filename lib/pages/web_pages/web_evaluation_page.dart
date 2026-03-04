@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:selc_uenr/components/button.dart';
+import 'package:selc_uenr/model/models.dart';
 import 'package:selc_uenr/model/questionnaire.dart';
 import 'package:selc_uenr/pages/verify_answers.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
@@ -45,6 +46,13 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
       allQuestions.length,
       (int index) => QuestionCellController()
     );
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    suggestionController.dispose();
   }
 
 
@@ -100,13 +108,14 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
                             mainAxisSize: MainAxisSize.min,
 
                             children: List<Widget>.generate(  
-                              Provider.of<SelcProvider>(context).questionnairesMap.length,
+                              Provider.of<SelcProvider>(context).categories.length,
                               (int index) {
+                                QuestionCategory category =  Provider.of<SelcProvider>(context, listen: false).categories[index];
 
                                 //get the category name at the current iteration
-                                String categoryName = Provider.of<SelcProvider>(context, listen: false).questionnairesMap.keys.toList()[index];
+                                String categoryName = category.categoryName;
 
-                                List<Questionnaire> questions = Provider.of<SelcProvider>(context, listen: false).questionnairesMap[categoryName]!;
+                                List<Questionnaire> questions = category.questionnaires;
 
                                 return Container(
                                   margin: const EdgeInsets.only(top: 12),
