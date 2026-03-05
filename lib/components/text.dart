@@ -204,12 +204,14 @@ class CustomTextArea extends StatelessWidget{
   final TextEditingController controller;
   final String? hintText;
   final int? maxLength;
+  final void Function(String?)? onChanged;
 
   const CustomTextArea({
     super.key,
     required this.controller,
     this.hintText,
-    this.maxLength
+    this.maxLength,
+    this.onChanged
   });
 
 
@@ -222,6 +224,7 @@ class CustomTextArea extends StatelessWidget{
       maxLength: maxLength,
       hintText: hintText,
       useLabel: false,
+      onChanged: onChanged,
     );
   }
 

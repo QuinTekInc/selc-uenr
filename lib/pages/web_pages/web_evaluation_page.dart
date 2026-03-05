@@ -9,6 +9,8 @@ import 'package:selc_uenr/providers/selc_provider.dart';
 import 'package:selc_uenr/components/cells.dart';
 import 'package:selc_uenr/components/text.dart';
 
+import '../../providers/eval_provider.dart';
+
 
 
 class WebEvaluationPage extends StatefulWidget {
@@ -38,7 +40,8 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
 
     allQuestions = Provider.of<SelcProvider>(context, listen: false).allQuestions;
 
-    
+    suggestionController.text = Provider.of<EvalProvider>(context, listen: false).suggestion;
+
     //todo: initialize the cell controllers.
     cellControllers = List<QuestionCellController>.generate(  
       allQuestions.length,
@@ -108,11 +111,10 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
                             children: List<Widget>.generate(  
                               Provider.of<SelcProvider>(context).categories.length,
                               (int index) {
-                                QuestionCategory category =  Provider.of<SelcProvider>(context, listen: false).categories[index];
 
+                                QuestionCategory category =  Provider.of<SelcProvider>(context, listen: false).categories[index];
                                 //get the category name at the current iteration
                                 String categoryName = category.categoryName;
-
                                 List<Questionnaire> questions = category.questionnaires;
 
                                 return Container(
@@ -140,7 +142,19 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
                                         padding: EdgeInsets.only(top: 8),
                                         child: QuestionCell(
                                           questionnaire: question, 
-                                          controller: cellControllers[allQuestions.indexOf(question)]
+                                          //controller: cellControllers[allQuestions.indexOf(question)],
+                                          controller: QuestionCellController(
+                                            questionId: question.questionId,
+                                            selectedIndex: Provider.of<EvalProvider>(context).selectedIndices[allQuestions.indexOf(question)],
+                                            selectedAnswer: Provider.of<EvalProvider>(context).questionnaireAnswers[allQuestions.indexOf(question)]
+                                          ),
+                                          onChanged: (selectedIndex, newAnswer) {
+                                            Provider.of<EvalProvider>(context, listen: false).updateAnswer(
+                                              allQuestions.indexOf(question),
+                                              selectedIndex,
+                                              newAnswer ?? ''
+                                            );
+                                          },
                                         ),
                                       )
                                       
@@ -203,7 +217,8 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: RatingRegulator(
-            controller: ratingsController
+            controller: RatingsController(rating: Provider.of<EvalProvider>(context).rating),
+            onChanged: (newRating) => Provider.of<EvalProvider>(context, listen: false).updateRating(newRating)
           ),
         ),
         
@@ -222,6 +237,7 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
           controller: suggestionController,
           maxLength: 300,
           hintText: 'Write your suggestions here',
+          onChanged: (newSuggestion) => Provider.of<EvalProvider>(context, listen: false).updateSuggestion(newSuggestion ?? ''),
           
         ),
     
@@ -241,11 +257,11 @@ class _WebEvaluationPageState extends State<WebEvaluationPage> {
   void handleContinue() => Navigator.push(  
     context, 
     MaterialPageRoute(
-      builder: (_) => VerifyReviewAnswersPage(
-        courseInfo: widget.course, 
-        answersMapList: cellControllers.map((controller) => controller.toMap()).toList(), 
-        rating: ratingsController.rating, 
-        suggestion: suggestionController.text
+      builder: (_) => ChangeNotifierProvider.value(
+        value: Provider.of<EvalProvider>(context),
+        child: VerifyReviewAnswersPage(
+          courseInfo: widget.course,
+        ),
       )
     )
   );

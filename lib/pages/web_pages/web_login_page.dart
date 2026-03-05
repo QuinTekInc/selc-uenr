@@ -106,8 +106,7 @@ class _WebLoginPageState extends State<WebLoginPage> {
                   width: double.infinity,
                   onPressed: () => SharedFunctions.handleLogin(context, usernameController.text, passwordController.text),
                 )
-            
-                
+
               ],
             
             ),

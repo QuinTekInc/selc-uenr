@@ -12,6 +12,7 @@ import 'package:selc_uenr/components/cells.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/components/ui_constants.dart';
 import 'package:selc_uenr/model/models.dart';
+import 'package:selc_uenr/providers/eval_provider.dart';
 
 import '../providers/selc_provider.dart';
 
@@ -19,16 +20,10 @@ import '../providers/selc_provider.dart';
 class VerifyReviewAnswersPage extends StatefulWidget {
 
   final RegisteredCourse courseInfo;
-  final List<Map<String, dynamic>> answersMapList;
-  final int rating;
-  final String suggestion;
 
   const VerifyReviewAnswersPage({
     super.key,
     required this.courseInfo,
-    required this.answersMapList,
-    required this.rating,
-    required this.suggestion,
   });
 
   @override
@@ -38,7 +33,7 @@ class VerifyReviewAnswersPage extends StatefulWidget {
 class _VerifyReviewAnswersPageState extends State<VerifyReviewAnswersPage> {
 
   bool disableSubmitButton = true;
-  List<Questionnaire> allQuestions = [];
+  late List<Questionnaire> allQuestions;
 
   @override
   void initState() {
@@ -239,7 +234,7 @@ class _VerifyReviewAnswersPageState extends State<VerifyReviewAnswersPage> {
         for(int i = 0; i < allQuestions.length; i++) buildResponseCell(
           questionNumber: i+1, 
           question: allQuestions[i].question, 
-          answer: widget.answersMapList[i]['answer']
+          answer: Provider.of<EvalProvider>(context).questionnaireAnswers[i]
         )
 
       ],
@@ -274,12 +269,12 @@ class _VerifyReviewAnswersPageState extends State<VerifyReviewAnswersPage> {
         
         children: [
           CustomText('Rating', textColor: Colors.green.shade300, fontWeight: FontWeight.w600, fontSize: 15,),
-          CustomText(widget.rating.toString(), fontSize: 14, fontWeight: FontWeight.w600,),
+          CustomText(Provider.of<EvalProvider>(context, listen: false).rating.toString(), fontSize: 14, fontWeight: FontWeight.w600,),
       
           const SizedBox(height: 12,),
       
           CustomText('Suggestion Made', textColor: Colors.green.shade300, fontWeight: FontWeight.w600, fontSize: 15,),
-          CustomText(widget.suggestion, fontSize: 14, ),
+          CustomText(Provider.of<EvalProvider>(context, listen: false).suggestion, fontSize: 14, ),
         ],
       ),
     );      
@@ -327,7 +322,10 @@ class _VerifyReviewAnswersPageState extends State<VerifyReviewAnswersPage> {
 
     try{
 
-      await Provider.of<SelcProvider>(context, listen: false).submitQuestionnaire(widget.courseInfo.classCourseId!, widget.answersMapList, widget.rating, widget.suggestion);
+      await Provider.of<SelcProvider>(context, listen: false).submitQuestionnaire(
+          widget.courseInfo.classCourseId!,
+          Provider.of<EvalProvider>(context, listen: false).submissionMap);
+
       Navigator.pop(context); //close the loading animation window.
 
       showCustomAlertDialog(

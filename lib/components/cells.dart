@@ -134,12 +134,14 @@ class QuestionCell extends StatefulWidget {
 
   final QuestionCellController controller;
   final Questionnaire questionnaire;
+  final void Function(int, String?) onChanged;
 
 
   const QuestionCell({
     super.key,
     required this.questionnaire,
     required this.controller,
+    required this.onChanged
   });
 
   @override
@@ -189,14 +191,14 @@ class _QuestionCellState extends State<QuestionCell> {
 
         //options
         subtitle: Container(
-            margin: const EdgeInsets.only(top: 8),
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade200,
-              borderRadius: BorderRadius.circular(12),
-            ),
+          margin: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade200,
+            borderRadius: BorderRadius.circular(12),
+          ),
 
-            child: selectionBoxes(widget.questionnaire.possibleAnswers.answers)
+          child: selectionBoxes(widget.questionnaire.possibleAnswers.answers)
         ),
       ),
     );
@@ -229,35 +231,31 @@ class _QuestionCellState extends State<QuestionCell> {
 
   List<Widget> buildCheckBoxes(List<String> possibleAnswers) {
     return List.generate(
-        possibleAnswers.length,
-            (index){
+      possibleAnswers.length,
+          (index){
 
-          bool selected = false;
-          String selectedAnswer = possibleAnswers[index];
+        bool selected = false;
+        String selectedAnswer = possibleAnswers[index];
 
-          if(index == selectedIndex){
-            selected = true;
-          }
-
-
-          return CustomCheckBox(
-            value: selected,
-            text: possibleAnswers[index],
-            onChanged: (newValue) => setState((){
-              selectedIndex = index;
-              widget.controller.selectedIndex = index;
-              widget.controller.selectedAnswer = selectedAnswer;
-            }),
-          );
-
+        if(index == selectedIndex){
+          selected = true;
         }
+
+        return CustomCheckBox(
+          value: selected,
+          text: possibleAnswers[index],
+          onChanged: (newValue) => setState((){
+            selectedIndex = index;
+            widget.controller.selectedIndex = index;
+            widget.controller.selectedAnswer = selectedAnswer;
+            widget.onChanged(index, selectedAnswer);
+          }),
+        );
+
+      }
     );
   }
 }
-
-
-
-
 
 
 
@@ -287,11 +285,16 @@ class QuestionCellController{
 //todo: THE REGULATOR FOR RATING A PRODUCT or the application.
 class RatingRegulator extends StatefulWidget {
 
-
   final RatingsController controller;
   final bool showTextField;
+  final void Function(int) onChanged;
 
-  const RatingRegulator({super.key, required this.controller, this.showTextField = false});
+  const RatingRegulator({
+    super.key,
+    required this.controller,
+    this.showTextField = false,
+    required this.onChanged
+  });
 
   @override
   State<RatingRegulator> createState() => _RatingRegulatorState();
@@ -367,6 +370,7 @@ class _RatingRegulatorState extends State<RatingRegulator> {
       //when the star is pressed, the rating of the product increases
       onTap: () => setState(() {
         widget.controller.rating = index+1;
+        widget.onChanged(widget.controller.rating);
       }),
     );
 

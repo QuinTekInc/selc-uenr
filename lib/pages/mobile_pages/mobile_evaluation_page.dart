@@ -8,6 +8,7 @@ import 'package:selc_uenr/components/button.dart';
 import 'package:selc_uenr/components/text.dart';
 import 'package:selc_uenr/model/models.dart';
 import 'package:selc_uenr/pages/verify_answers.dart';
+import 'package:selc_uenr/providers/eval_provider.dart';
 import 'package:selc_uenr/providers/selc_provider.dart';
 import '../../components/cells.dart';
 
@@ -54,6 +55,11 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
       categoryFragments = initFragments();
       categoryFragments.add(buildSuggestionFragment());
     });
+  }
+
+  @override void dispose(){
+    super.dispose();
+    Provider.of<EvalProvider>(context).dispose();
   }
 
 
@@ -173,8 +179,20 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
               //todo: fix this later.
               int qIndex = allQuestions.indexOf(question);
               return QuestionCell(
-                controller: qCellControllers[qIndex],
                 questionnaire: question,
+                //controller: cellControllers[allQuestions.indexOf(question)],
+                controller: QuestionCellController(
+                    questionId: question.questionId,
+                    selectedIndex: Provider.of<EvalProvider>(context, listen: false).selectedIndices[qIndex],
+                    selectedAnswer: Provider.of<EvalProvider>(context,listen: false).questionnaireAnswers[qIndex]
+                ),
+                onChanged: (selectedIndex, newAnswer) {
+                  Provider.of<EvalProvider>(context, listen: false,).updateAnswer(
+                    qIndex,
+                    selectedIndex,
+                    newAnswer ?? ''
+                  );
+                },
               );
             }
           ),
@@ -203,8 +221,9 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
 
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: RatingRegulator(
-          controller: _ratingsController
+        child:  RatingRegulator(
+          controller: RatingsController(rating: Provider.of<EvalProvider>(context, listen: false).rating),
+          onChanged: (newRating) => Provider.of<EvalProvider>(context, listen: false).updateRating(newRating)
         ),
       ),
       
@@ -220,10 +239,10 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
 
       //suggestions text area
       CustomTextArea(
-        controller: _suggestionController,
+        controller: TextEditingController(text: Provider.of<EvalProvider>(context, listen: false).suggestion),
         maxLength: 300,
         hintText: 'Write your suggestions here',
-        
+        onChanged: (newSuggestion) => Provider.of<EvalProvider>(context, listen: false).updateSuggestion(newSuggestion ?? ''),
       ),
 
       const SizedBox(height: 15,),
@@ -296,11 +315,11 @@ class _MobileEvaluationPageState extends State<MobileEvaluationPage> {
 
     Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) => VerifyReviewAnswersPage(
-          courseInfo: widget.course,
-          answersMapList: qCellControllers.map((controller) => controller.toMap()).toList(),
-          rating: _ratingsController.rating,
-          suggestion: suggestion,
+        builder: (_) => ChangeNotifierProvider.value(
+          value: Provider.of<EvalProvider>(context),
+          child: VerifyReviewAnswersPage(
+            courseInfo: widget.course,
+          ),
         )
       )
     );

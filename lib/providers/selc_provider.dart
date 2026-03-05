@@ -189,17 +189,11 @@ class SelcProvider extends ChangeNotifier{
 
 
 
-  Future<void> submitQuestionnaire(int classCourseId, dynamic answers, int rating, suggestion) async {
+  Future<void> submitQuestionnaire(int classCourseId, Map<String, dynamic> submissionMap) async {
 
-    Map<String, dynamic> requestBodyMap = {
-      'cc_id': classCourseId,
-      'answers': answers,
-      'rating': rating,
-      'suggestion': suggestion
-    };
+    submissionMap['cc_id'] = classCourseId;
 
-    dynamic requestBodyJson = jsonEncode(requestBodyMap);
-
+    dynamic requestBodyJson = jsonEncode(submissionMap);
 
     final response = await connector.postRequest(endpoint: 'submit-eval/', body: requestBodyJson);
 
