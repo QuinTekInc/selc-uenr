@@ -22,8 +22,3 @@ Future<void> saveAuthorizationToken(String token) async{
 
 
 
-Future<void> deleteAuthorizationToken() async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  prefs.remove(AUTHENTICATION_TOKEN_KEY);
-}
-

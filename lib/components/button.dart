@@ -26,13 +26,15 @@ class CustomButton extends StatelessWidget {
   //button with only text in it.
   factory CustomButton.withText(String text, {
     required Function() onPressed, 
-    double? width, bool disable = false
+    double? width, bool disable = false,
+    Color? backgroundColor
   }){
 
     return CustomButton(
       onPressed: onPressed,
       width: width,
       disable: disable,
+      backgroundColor: backgroundColor,
       child: CustomText(text, fontSize: 16, textColor: Colors.white,),
     );
   }

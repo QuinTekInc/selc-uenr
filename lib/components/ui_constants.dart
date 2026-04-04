@@ -256,6 +256,13 @@ class SharedFunctions{
   }
 
 
+  //handles oauth login to the schools authentication system.
+  static void handleOAuthLogin(BuildContext context){
+
+    //todo: initialize the oauth login here.
+
+  }
+
 
 
   static void handleForgotPassword(BuildContext context){
@@ -268,7 +275,7 @@ class SharedFunctions{
   }
 
 
-
+  //logs the user out of their accounts.
   static void handleLogout(BuildContext context) async {
 
     showDialog(
@@ -291,7 +298,7 @@ class SharedFunctions{
       );
 
 
-      Provider.of<SelcProvider>(context, listen: false).flushData();
+      Provider.of<SelcProvider>(context, listen: false).dispose();
 
     }on SocketException{
 
@@ -307,8 +314,7 @@ class SharedFunctions{
 
 
 
-
-
+  //when the course cell is pressed at the dashboard of both mobile and desktop screens.
   static void handleCourseCellPressed(BuildContext context, RegisteredCourse course) {
 
 
@@ -353,14 +359,14 @@ class SharedFunctions{
   }
 
 
-
+  //retrieves the answers for an already evaluated course from the backend.
   static void handleExtractEvaluationForCourse(BuildContext context, RegisteredCourse course) async {
 
     showDialog(
-        context: context,
-        builder: (_) => const LoadingDialog(
-            message: 'Retrieving information. Please wait'
-        )
+      context: context,
+      builder: (_) => const LoadingDialog(
+          message: 'Retrieving information. Please wait'
+      )
     );
 
     try{

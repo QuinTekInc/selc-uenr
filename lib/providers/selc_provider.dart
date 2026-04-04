@@ -1,6 +1,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:selc_uenr/components/services/oauth/oauth_credentials.dart';
+import 'package:selc_uenr/components/services/oauth/oauth_service.dart';
+import 'package:selc_uenr/components/services/secure_stoage_service.dart';
 import 'package:selc_uenr/model/models.dart';
 import 'dart:convert';
 import 'package:selc_uenr/components/server_connector.dart' as connector;
@@ -23,6 +26,9 @@ import 'package:selc_uenr/components/preferences_util.dart' as pref_util;
  */
 
 class SelcProvider extends ChangeNotifier{
+
+
+  List<String> evaluatedCourseCodes = [];
 
 
   StudentInfo? _studentInfo;
@@ -48,15 +54,15 @@ class SelcProvider extends ChangeNotifier{
 
   int questionsCount = 0;
 
-  void flushData(){
-    _studentInfo = null;
-    courses.clear();
-    allQuestions.clear();
-  }
-
 
   @override void dispose(){
-    flushData();
+
+    categories.clear();
+    allQuestions.clear();
+
+    _generalSettings = null;
+    _studentInfo = null;
+
     super.dispose();
   }
 
@@ -82,15 +88,57 @@ class SelcProvider extends ChangeNotifier{
 
     _studentInfo = StudentInfo.fromMap(responseBody as Map<String, dynamic>);
 
+    String authToken = responseBody['auth_token'];
 
     //todo: save the auth_token key that came with the response.
-    await pref_util.saveAuthorizationToken(responseBody['token']);
+    await SecureStorageService.saveAuthToken(authToken);
 
     await getGeneralSettings();
 
     await getQuestions();
 
     notifyListeners();
+  }
+
+
+  Future<void> oAuthLogin() async {
+    OAuthService authService = getService();
+
+    try{
+
+      /*
+        W'ERE INTERESTED IN THE KEYS:
+        "indexNumber"
+        "referenceNumber"
+        "level"
+       */
+
+      Map<String, dynamic> infoMap = await authService.performSignIn(UenrAuthCredentials());
+
+      final response = await connector.postRequest(endpoint: 'oauth-login/', body: jsonEncode(infoMap));
+
+      if(response.statusCode != 200){
+        throw Exception(jsonDecode(response.body)["message"]);
+      }
+
+      Map<String, dynamic> responseBody = jsonDecode(response.body);
+
+      //save the auth_token using SecureStorageService class.
+      String authToken = responseBody['auth_token'];
+
+      await SecureStorageService.saveAuthToken(authToken);
+
+      //get the list of evaluated courses.
+      evaluatedCourseCodes = List<String>.from(responseBody['evaluated_courses']);
+
+      await getGeneralSettings();
+      await getQuestions();
+
+      notifyListeners();
+
+    }catch(err){
+      rethrow;
+    }
   }
 
 
@@ -104,8 +152,11 @@ class SelcProvider extends ChangeNotifier{
       throw Error();
     }
 
-    //todo:delete the the user's authentication from the shared preference
-    await pref_util.deleteAuthorizationToken();
+    //delete the tokens from the secured storage.
+    await SecureStorageService.clearData();
+
+    allQuestions.clear();
+    categories.clear();
 
     //todo: delete the token after that.
     notifyListeners();
@@ -248,6 +299,7 @@ class SelcProvider extends ChangeNotifier{
 
     return jsonDecode(responseBody);
   }
+
 
 }
 

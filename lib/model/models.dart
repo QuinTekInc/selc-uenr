@@ -62,7 +62,7 @@ class GeneralSettings{
   factory GeneralSettings.fromJson(Map<String, dynamic> jsonMap){
     return GeneralSettings(
       currentSemester: jsonMap['current_semester'],
-      academicYear: jsonMap['academic_year'].toString(),
+      academicYear: jsonMap['academic_year'],
       isAcceptingEvaluation: jsonMap['enable_evaluations'] ?? false
     );
   }

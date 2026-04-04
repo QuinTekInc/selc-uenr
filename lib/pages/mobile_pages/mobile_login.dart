@@ -37,18 +37,16 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
-      
+        spacing: 8,
         children: [
       
           //show the UENR Image view.
           const LogoCardImageView(),
-      
-          const SizedBox(height: 10),
           
           //sign in text
           HeaderText('Sign In'),
       
-          const SizedBox(height: 20,),
+          const SizedBox.shrink(),
           
           //username field
           CustomTextField(
@@ -59,16 +57,12 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
             onChanged: (newValue) => checkFields(),
           ),
       
-          const SizedBox(height: 15,),
-      
           //password field
           CustomPasswordField(
             controller: passwordController,
             hintText: 'Password',
             onChanged: (newValue) => checkFields()
           ),
-      
-          const SizedBox(height: 5,),
       
           //text button for forgot password.
           TextButton(
@@ -80,14 +74,20 @@ class _MobileLoginPageState extends State<MobileLoginPage> {
             onPressed: () => SharedFunctions.handleForgotPassword(context),
           ),
       
-          const SizedBox(height: 15,),
-      
           //login button
           CustomButton.withText(
             'Login',
             disable: disableButton,
             width: double.infinity,
             onPressed: () => SharedFunctions.handleLogin(context, usernameController.text, passwordController.text),
+          ),
+
+
+          //todo: this button will be removed
+          CustomButton.withText(
+            "Sign In with credentials",
+            onPressed: ()  => SharedFunctions.handleOAuthLogin(context),
+            backgroundColor: Colors.blue.shade400,
           )
         ],
       ),

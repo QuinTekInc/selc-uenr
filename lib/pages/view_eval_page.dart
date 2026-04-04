@@ -242,7 +242,7 @@ class ViewEvaluationForCourse extends StatelessWidget {
 
           for(Map<String, dynamic> answerMap in catQuestionAnswers) ListTile(
             leading: const Icon(Icons.question_mark, color: Colors.green,),
-            title: CustomText(answerMap['question'], fontWeight: FontWeight.w600, fontSize: 14,),
+            title: CustomText(answerMap['question'], fontSize: 14,),
             subtitle: answerColorText(answerMap['answer']),
           ),
         ],
