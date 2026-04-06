@@ -44,6 +44,7 @@ class EvalProvider with ChangeNotifier{
   }
 
 
+  //the format to which the evaluation result is sent to the backend.
   Map<String, dynamic> get submissionMap => {
     'answers': List<Map<String, dynamic>>.generate(
       questionnaireIds.length,

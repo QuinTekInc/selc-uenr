@@ -179,8 +179,6 @@ class SelcProvider extends ChangeNotifier{
   }
 
 
-  
-
 
   Future<void> getRegisteredCourses() async {
 
